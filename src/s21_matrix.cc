@@ -9,9 +9,7 @@ S21Matrix::S21Matrix(int rows, int cols) : rows_(rows), cols_(cols) {
     throw std::out_of_range(
         "Incorrect input, rows and cols size should be positive");
   matrix_ = new double *[rows_];
-  for (int i = 0; i < rows_; i++) {
-    matrix_[i] = new double[cols_]();
-  }
+  CreateMatrix();
 }
 
 S21Matrix::S21Matrix(const S21Matrix &other)
@@ -85,7 +83,13 @@ void S21Matrix::setCols(int input) {
 void S21Matrix::CreateMatrix() {
   matrix_ = new double *[rows_]();
   for (int i = 0; i < rows_; i++) {
-    matrix_[i] = new double[cols_]();
+    try {
+      matrix_[i] = new double[cols_]();
+    } catch (...) {
+      for (int j = 0; j < i; j++) delete[] matrix_[j];
+      delete[] matrix_;
+      throw;
+    }
   }
 }
 
